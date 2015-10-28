@@ -1,0 +1,53 @@
+source 'https://rubygems.org'
+#source 'http://gems.github.com'
+
+gem 'rails', '3.0.19'
+gem 'rake', '0.8.7'
+
+gem 'nokogiri'
+gem "formtastic"
+gem "mysql"
+gem "uuidtools"
+gem "compass"
+gem 'curb'
+gem 'haml'
+<<<<<<< HEAD
+gem 'sequencescape-client-api', '0.2.6',
+  :git => 'git+ssh://git@github.com/sanger/sequencescape-client-api.git',
+  :branch => 'production',
+  :require => 'sequencescape'
+=======
+gem 'sequencescape-client-api', :github => 'sanger/sequencescape-client-api', :tag => 'release-0.0.1', :require => 'sequencescape'
+>>>>>>> f7bdac694be07a9d58ee2b2d82b81487e4e60d5f
+gem 'delayed_job'
+gem "jquery-rails"
+
+gem "debugger", :require => "debugger", :groups => [:development, :test, :cucumber]
+
+group :development do
+  gem "sinatra"
+end
+
+gem "factory_girl_rails", :groups => [:test,:cucumber]
+
+group :test do
+  gem "mocha"
+  gem "shoulda"
+end
+
+group :cucumber do
+  gem "cucumber-rails", ">=0.5.1", :require => false
+  gem "database_cleaner"
+  gem "launchy"
+<<<<<<< HEAD
+  gem "timecop"
+=======
+  gem "poltergeist"
+>>>>>>> f7bdac694be07a9d58ee2b2d82b81487e4e60d5f
+end
+
+group :deployment do
+  gem 'thin'
+  gem "psd_logger", :github => "sanger/psd_logger"
+  gem 'exception_notification'
+end
