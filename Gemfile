@@ -6,7 +6,8 @@ gem 'rake', '0.8.7'
 
 gem 'nokogiri'
 gem "formtastic"
-gem "mysql"
+gem "mysql2"
+gem "activerecord-mysql2-adapter"
 gem "uuidtools"
 gem "compass"
 gem 'curb'
