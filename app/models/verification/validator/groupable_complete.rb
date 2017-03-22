@@ -1,8 +1,8 @@
 class Verification::Validator::GroupableComplete < ActiveModel::Validator
   def validate(record)
-    unless record.class.transfer_groups.all?{|t| is_transfer_valid?(t, record.scanned_values)}
-      record.errors[:base] << "Invalid verification group is not complete"
-      return
+    unless record.class.transfer_groups.all? { |t| is_transfer_valid?(t, record.scanned_values) }
+      record.errors[:base] << 'Invalid verification group is not complete'
+      nil
     end
   end
 

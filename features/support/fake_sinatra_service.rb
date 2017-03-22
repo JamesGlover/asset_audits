@@ -9,7 +9,7 @@ class FakeSinatraService
   # test runs.
   def self.take_next_port
     if @ports.nil?
-      initial_port = (($$ % 100) * 10) + 6000  # Use pid and use a range
+      initial_port = (($$ % 100) * 10) + 6000 # Use pid and use a range
       @ports       = (1..100).to_a.shuffle.map { |p| initial_port + p }
     end
     @ports.shift
@@ -18,11 +18,12 @@ class FakeSinatraService
   attr_reader :port
   attr_reader :host
 
-  def initialize(*args, &block)
-    @host, @port = 'localhost', self.class.take_next_port
+  def initialize(*_args)
+    @host = 'localhost'
+    @port = self.class.take_next_port
   end
 
-  def run!(&block)
+  def run!
     start_sinatra do |thread|
       begin
         wait_for_sinatra_to_startup!
@@ -41,11 +42,11 @@ class FakeSinatraService
       # Ensure that, if we're running in a javascript environment, that the browser has been launched
       # before we start our service.  This ensures that the listening port is not inherited by the fork
       # within the Selenium driver.
-      Before(tags) do |scenario|
+      Before(tags) do |_scenario|
         Capybara.current_session.driver.browser if Capybara.current_driver == Capybara.javascript_driver
         service.instance.start!
       end
-      After(tags)  { |scenario| service.instance.finish! }
+      After(tags) { |_scenario| service.instance.finish! }
     end
   end
 
@@ -66,19 +67,17 @@ class FakeSinatraService
     @thread = nil
   end
 
-private
+  private
 
-  def clear
+  def clear; end
 
-  end
-
-  def start_sinatra(&block)
+  def start_sinatra
     thread = Thread.new do
       # The effort you have to go through to silence Sinatra/WEBrick!
       logger       = Logger.new(STDERR)
       logger.level = Logger::FATAL
 
-      service.run!(:host => @host, :port => @port, :webrick => { :Logger => logger, :AccessLog => [] })
+      service.run!(host: @host, port: @port, webrick: { Logger: logger, AccessLog: [] })
     end
     yield(thread)
   end
@@ -105,18 +104,18 @@ private
       end
     end
 
-    raise StandardError, "Our dummy webservice did not start up in time!"
+    raise StandardError, 'Our dummy webservice did not start up in time!'
   end
 
   class Base < Sinatra::Base
-    def self.run!(options={})
+    def self.run!(options = {})
       set options
-      set :server, %w{webrick}                             # Force Webrick to be used as it's quicker to startup & shutdown
+      set :server, %w(webrick) # Force Webrick to be used as it's quicker to startup & shutdown
       handler      = detect_rack_handler
       handler_name = handler.name.gsub(/.*::/, '')
-      handler.run(self, { :Host => bind, :Port => port }.merge(options.fetch(:webrick, {}))) do |server|
+      handler.run(self, { Host: bind, Port: port }.merge(options.fetch(:webrick, {}))) do |server|
         set :running, true
-        set :quit_handler, Proc.new { server.shutdown }   # Kill the Webrick specific instance if we need to
+        set :quit_handler, proc { server.shutdown } # Kill the Webrick specific instance if we need to
       end
     rescue Errno::EADDRINUSE => e
       raise StandardError, "== Someone is already performing on port #{port}!"
@@ -138,4 +137,3 @@ private
     end
   end
 end
-
