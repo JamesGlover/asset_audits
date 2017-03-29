@@ -31,6 +31,7 @@ group :test do
 end
 
 group :cucumber do
+  gem 'webmock'
   gem 'capybara'
   gem 'minitest'
   gem 'cucumber-rails', require: false
